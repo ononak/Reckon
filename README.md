@@ -1,2 +1,6 @@
 # ReguTool
-Regularisation algorithm to solve  min_{x }(||Ax-y||p+ lambda^2||Lx||q) problem
+ Solver for min_x {|y-Ax|_p + |Lx|_q}
+
+ Reference: A GENERALIZED KRYLOV SUBSPACE METHOD FOR Lp-Lq MINIMIZATION
+ A. LANZA, S. MORIGI, L. REICHEL, AND F. SGALLARI
+ DOI:10.1137/140967982
