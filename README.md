@@ -1,6 +1,23 @@
 # ReguTool (Lp-Lq regularization)
 
- Solver for min_x {|y-Ax|_p + |Lx|_q}
+Regularization is a method to adjust how closely a model fit to data. Adding an additional term that penalizes the loss function is one of the way of adjusting output model.
+Linear regularization problems can be defined as follows
+
+(**)  min_x {|y-Ax|_p + |lambda*Lx|_q}
+  
+Here p and q represent the norm of the vectors. x is the unknown source (or the model parameters) to be estimated, A is the forward model matrix with high condition number or non-invertable matrix. L is the regularization operator which is used adjust the properties of the output model. lamda is a regularization parameter employed to determine the weight of the regularization term in the solution. y is the noisy measurements that can be expressed as follows;
+
+y = Ax + n
+
+where n is the measurement noise vector.
+
+- If p = q = 2, then the problem (**) is called Tikhonov regularization or L2 regularization.
+
+- If p = 2, q = 1, then the problem (**) is called L1 regularization, which promotes sparsity in the solution.
+
+It is also possible to use 0 < p, q <=2 to estimate the unknown x. 
+
+Solver for min_x {|y-Ax|_p + lambda*|Lx|_q}
 
  Reference: A GENERALIZED KRYLOV SUBSPACE METHOD FOR Lp-Lq MINIMIZATION
  A. LANZA, S. MORIGI, L. REICHEL, AND F. SGALLARI
