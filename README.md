@@ -5,7 +5,7 @@ Linear regularization problems can be defined as follows
 
 (**)  min_x {|y-Ax|_p + |lambda*Lx|_q}
   
-Here p and q represent the norm of the vectors. x is the unknown source (or the model parameters) to be estimated, A is the forward model matrix with high condition number or non-invertable matrix. L is the regularization operator which is used adjust the properties of the output model. lamda is a regularization parameter employed to determine the weight of the regularization term in the solution. y is the noisy measurements that can be expressed as follows;
+Here p and q represent the norm of the vectors. x is the unknown source (or the model parameters) to be estimated, A is the forward model matrix with high condition number or it is rank deficient. L is the regularization operator which is used adjust the properties of the output model. lamda is a regularization parameter employed to determine the weight of the regularization term in the solution. y is the noisy measurements that can be expressed as follows;
 
 y = Ax + n
 
