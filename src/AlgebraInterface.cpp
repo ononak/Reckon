@@ -5,7 +5,7 @@
 //  Created by Önder Nazım Onak on 25.01.2022.
 //
 
-#include "LinAlgebraDef.hpp"
+#include "AlgebraInterface.hpp"
 
 namespace regu {
 

@@ -67,6 +67,9 @@ void test_1() {
   pl4.plot_xy(time_inst, l1_estimation, "L1 estimation");
   pl4.set_xlabel("Time(s)");
   pl4.set_ylabel("Seismic Reflector Amplitude");
+
+  std::cout << "Will continue to run in 10 seconds" << std::endl;
+  sleep(10);
 }
 
 void test_2() {
@@ -99,6 +102,9 @@ void test_2() {
     pl1.plot_x(x2);
     pl1.plot_x(x1);
   }
+
+  std::cout << "Will continue to run in 10 seconds" << std::endl;
+  sleep(10);
 }
 
 void test_3() {
@@ -141,6 +147,9 @@ void test_3() {
   Vec l1_estimation = std::get<0>(ret1);
 
   pl2.plot_xy(time_inst, l1_estimation, "Total Variation");
+
+  std::cout << "Will continue to run in 10 seconds" << std::endl;
+  sleep(10);
 }
 
 int main(int argc, const char *argv[]) {
@@ -152,16 +161,8 @@ int main(int argc, const char *argv[]) {
   Gnuplot::set_terminal_std("qt");
 
   test_1();
-  std::cout << "Will continue to run in 10 seconds" << std::endl;
-  sleep(10);
-
   test_2();
-  std::cout << "Will continue to run in 10 seconds" << std::endl;
-  sleep(10);
-
   test_3();
-  std::cout << "Will continue to run in 10 seconds" << std::endl;
-  sleep(10);
 
   return 0;
 }
