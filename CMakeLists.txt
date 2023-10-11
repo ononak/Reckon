@@ -18,6 +18,8 @@ file(GLOB D_SRC
 
 find_package(Armadillo REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIRS})
+include_directories(submodules/gnuplot)
+
 add_executable(l2Ex1 example/l2reg_1.cpp ${D_SRC})
 add_executable(lpqExq example/lpqreg.cpp ${D_SRC})
 add_executable(l1Ex1 example/l1reg_1.cpp ${D_SRC})

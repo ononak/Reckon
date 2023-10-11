@@ -11,7 +11,7 @@
 #include "../src/Regularization.hpp"
 #include <chrono>
 
-#include "gnuplot-cpp/gnuplot_i.hpp"
+#include "gnuplot_i.hpp"
 #include <filesystem>
 #include <string>
 #include <unistd.h>

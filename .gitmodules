@@ -1,0 +1,3 @@
+[submodule "submodules/gnuplot"]
+	path = submodules/gnuplot
+	url = https://github.com/tttamaki/gnuplot-cpp
