@@ -6,6 +6,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 include(CTest)
+include(FetchContent)
 enable_testing()
 
 find_package(Gnuplot REQUIRED)
@@ -14,20 +15,32 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 file(GLOB D_SRC
      "src/*.h"
      "src/*.cpp"
-)
+) 
+# download the Matplot++ repository and include it as a subdirectory
+FetchContent_Declare(matplotplusplus
+        GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
+        GIT_TAG origin/master) 
 
+FetchContent_GetProperties(matplotplusplus)
+if(NOT matplotplusplus_POPULATED)
+     FetchContent_Populate(matplotplusplus)
+     add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+#find Armadillo library
 find_package(Armadillo REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIRS})
+message(ARMADILLO_INCLUDE_DIRS = "${ARMADILLO_INCLUDE_DIRS}")
+message(ARMADILLO_LIBRARIES = "${ARMADILLO_LIBRARIES}")
+
+
 include_directories(submodules/gnuplot)
 
-add_executable(l2Ex1 example/l2reg_1.cpp ${D_SRC})
-add_executable(lpqExq example/lpqreg.cpp ${D_SRC})
-add_executable(l1Ex1 example/l1reg_1.cpp ${D_SRC})
-add_executable(l1Ex2 example/l1reg_2.cpp ${D_SRC})
-target_link_libraries(l2Ex1 ${ARMADILLO_LIBRARIES})
-target_link_libraries(lpqExq ${ARMADILLO_LIBRARIES})
-target_link_libraries(l1Ex1 ${ARMADILLO_LIBRARIES})
-target_link_libraries(l1Ex2 ${ARMADILLO_LIBRARIES})
+add_executable(example_1 example/example_1.cpp ${D_SRC})
+add_executable(example_2 example/example_2.cpp ${D_SRC})
+
+target_link_libraries(example_1 PUBLIC ${ARMADILLO_LIBRARIES} matplot)
+target_link_libraries(example_2 PUBLIC ${ARMADILLO_LIBRARIES} matplot)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
