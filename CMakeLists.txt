@@ -9,9 +9,6 @@ include(CTest)
 include(FetchContent)
 enable_testing()
 
-find_package(Gnuplot REQUIRED)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
-
 file(GLOB D_SRC
      "src/*.h"
      "src/*.cpp"
@@ -32,9 +29,6 @@ find_package(Armadillo REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIRS})
 message(ARMADILLO_INCLUDE_DIRS = "${ARMADILLO_INCLUDE_DIRS}")
 message(ARMADILLO_LIBRARIES = "${ARMADILLO_LIBRARIES}")
-
-
-include_directories(submodules/gnuplot)
 
 add_executable(example_1 example/example_1.cpp ${D_SRC})
 add_executable(example_2 example/example_2.cpp ${D_SRC})
