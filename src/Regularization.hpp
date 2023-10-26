@@ -3,6 +3,7 @@
 #define REGULARIZATION_HPP
 
 #include "ILinearAlgebra.hpp"
+#include <__tuple_dir/tuple_element.h>
 #include <tuple>
 
 namespace regu {
@@ -19,7 +20,7 @@ constexpr int MAX_ITER = 500;
  * @param lambda
  * @return Vec
  */
-Vec solve(Vec y, Mat A, Mat L, double lambda);
+std::tuple<bool, Vec> solve(Vec y, Mat A, Mat L, double lambda);
 
 /**
  * @brief Solver for min_x {|y-Ax|_p + lambda^2|Lx|_q}  where 0< p <= 2 0 < q <=
@@ -34,7 +35,7 @@ Vec solve(Vec y, Mat A, Mat L, double lambda);
  * @return std::tuple<Vec, double, double> that contains the estimation of x ,
  * |Lx|_q, and |y-Ax|_p
  */
-std::tuple<Vec, double, double> solve(Vec y, Mat A, Mat L, double lambda,
+std::tuple<bool, Vec, double, double> solve(Vec y, Mat A, Mat L, double lambda,
                                       double p, double q);
 
 } // namespace regu

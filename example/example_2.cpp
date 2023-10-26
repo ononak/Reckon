@@ -49,9 +49,9 @@ void test() {
   double qArray[] = {2, 1.5};
   double lambdaArray[] = {0.32, 0.09};
 
-  std::tuple<Vec, double, double> ret1 =
+  std::tuple<bool, Vec, double, double> ret1 =
       solve(measurement, forwardMatrix, regularizationMatrix, 0.0032, 2, 1);
-  Vec estimation = std::get<0>(ret1);
+  Vec estimation = std::get<1>(ret1);
   auto h3 = matplot::figure();
   matplot::title("L2L1 model");
   matplot::plot(timeInst, estimation)->line_width(2);
@@ -59,10 +59,10 @@ void test() {
   auto h4 = matplot::figure();
   matplot::hold(matplot::on);
   for (int i = 0; i < 2; i++) {
-    std::tuple<Vec, double, double> ret2 =
+    std::tuple<bool, Vec, double, double> ret2 =
         solve(measurement, forwardMatrix, regularizationMatrix, lambdaArray[i],
               pArray[i], qArray[i]);
-    Vec estimation = std::get<0>(ret2);
+    Vec estimation = std::get<1>(ret2);
     matplot::plot(timeInst, estimation)->line_width(2);
   }
   ::matplot::legend({"L2L2", "L2L1.5"});

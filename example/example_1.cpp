@@ -49,10 +49,10 @@ void test() {
   double lambdaArray[] = {6,  3};
 
   for (int i = 0; i < 2; i++) {
-    std::tuple<Vec, double, double> ret =
+    std::tuple<bool, Vec, double, double> ret =
         solve(measurement, forwardMatrix, regularizationMatrix, lambdaArray[i],
               pArray[i], qArray[i]);
-    Vec estimation = std::get<0>(ret);
+    Vec estimation = std::get<1>(ret);
     matplot::plot(timeInst, estimation)->line_width(2);
   }
   ::matplot::legend({"True", "L2L2",  "L2L1"});

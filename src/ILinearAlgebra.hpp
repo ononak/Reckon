@@ -16,6 +16,18 @@ using Vec = arma::vec;
 using Mat = arma::mat;
 
 /**
+ * @brief 
+ * 
+ * @tparam T 
+ * @param v1 
+ * @param v2 
+ * @return true 
+ * @return false 
+ */
+template<typename T> bool operator==(const T& v1, const T& v2) {
+    return v1 == v2;
+}
+/**
  * @brief Generate unit matrix
  *
  * @param nrow
