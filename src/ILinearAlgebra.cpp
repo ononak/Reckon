@@ -7,7 +7,7 @@
 
 #include "ILinearAlgebra.hpp"
 
-namespace regu {
+namespace sci {
 
 /*----------------------------------------------------------------*/
 template <> bool operator==<Vec>(const Vec &v1, const Vec &v2) {

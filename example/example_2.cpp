@@ -15,7 +15,7 @@
 #include <unistd.h>
 
 using namespace std::chrono;
-using namespace regu;
+using namespace sci;
 
 void test() {
 
@@ -23,10 +23,10 @@ void test() {
   Vec timeInst, measurement, trueData;
 
   /*Read test data*/
-  auto ret = forwardMatrix.load("../test_data_1/fmat.mat", arma::raw_ascii);
-  ret = timeInst.load("../test_data_1/time.mat", arma::raw_ascii);
-  ret = measurement.load("../test_data_1/measurement.mat", arma::raw_ascii);
-  ret = trueData.load("../test_data_1/true.mat", arma::raw_ascii);
+  auto ret = forwardMatrix.load("../example/test_data_1/fmat.mat", arma::raw_ascii);
+  ret = timeInst.load("../example/test_data_1/time.mat", arma::raw_ascii);
+  ret = measurement.load("../example/test_data_1/measurement.mat", arma::raw_ascii);
+  ret = trueData.load("../example/test_data_1/true.mat", arma::raw_ascii);
 
   auto h1 = matplot::figure();
   matplot::plot(timeInst, measurement)->line_width(2);
@@ -48,9 +48,10 @@ void test() {
   double pArray[] = {2, 2};
   double qArray[] = {2, 1.5};
   double lambdaArray[] = {0.32, 0.09};
+  LpLqRegularization regularization(forwardMatrix, regularizationMatrix);
 
-  std::tuple<bool, Vec, double, double> ret1 =
-      solve(measurement, forwardMatrix, regularizationMatrix, 0.0032, 2, 1);
+  std::tuple<Result, Vec, double, double> ret1 =
+      regularization.solve(measurement, 0.0032, 2, 1);
   Vec estimation = std::get<1>(ret1);
   auto h3 = matplot::figure();
   matplot::title("L2L1 model");
@@ -59,9 +60,8 @@ void test() {
   auto h4 = matplot::figure();
   matplot::hold(matplot::on);
   for (int i = 0; i < 2; i++) {
-    std::tuple<bool, Vec, double, double> ret2 =
-        solve(measurement, forwardMatrix, regularizationMatrix, lambdaArray[i],
-              pArray[i], qArray[i]);
+    std::tuple<Result, Vec, double, double> ret2 =
+        regularization.solve(measurement, lambdaArray[i], pArray[i], qArray[i]);
     Vec estimation = std::get<1>(ret2);
     matplot::plot(timeInst, estimation)->line_width(2);
   }

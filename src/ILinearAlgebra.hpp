@@ -8,9 +8,10 @@
 #ifndef I_LINEAR_ALGEBRA_HPP
 #define I_LINEAR_ALGEBRA_HPP
 
+#include "SciTool.hpp"
 #include <armadillo>
 
-namespace regu {
+namespace sci {
 
 using Vec = arma::vec;
 using Mat = arma::mat;
