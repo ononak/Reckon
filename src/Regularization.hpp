@@ -26,28 +26,8 @@ public:
    * @param forwardM linear tranfer matrix
    * @param regularizationM regularization matrix
    */
-  LpLqRegularization(Mat &forwardM, Mat &regularizationM);
-
-  /**
-   * @brief Copy constructor
-   *
-   * @param other
-   */
-  LpLqRegularization(const LpLqRegularization &other);
-
-  /**
-   * @brief Move constructor
-   *
-   * @param other
-   */
-  LpLqRegularization(LpLqRegularization &&other);
-  /**
-   * @brief
-   *
-   * @param other
-   * @return LpLqRegularization&
-   */
-  LpLqRegularization &operator=(const LpLqRegularization &other);
+  LpLqRegularization(const Mat &forwardM, const Mat &regularizationM);
+  ~LpLqRegularization();
 
   /**
    * @brief Solve optimization problem min_x {|y-Ax|_p + lambda^2|Lx|_q}
@@ -60,43 +40,30 @@ public:
    * estimation of x , |Lx|_q, and |y-Ax|_p
    */
   std::tuple<Result, Vec, double, double>
-  solve(Vec &y, double lambda, double pNorm = 2, double qNorm = 2);
+  solve(const Vec &y, double lambda, double pNorm = 2, double qNorm = 2) const;
 
 protected:
   /**
    * @brief Solve optimization problem min_x {|y-Ax|_2 + lambda^2|Lx|_2}
-   *
-   * @param y noisy measurement
-   * @param fm transfer matrix
-   * @param rm regularization matrix
-   * @param lambda regularization parameter
-   * @return std::tuple<Result, Vec> estimation
    */
-  std::tuple<Result, Vec> solveTikhonov(Vec &y, Mat &fm, Mat &rm,
-                                        double lambda);
+  std::tuple<Result, Vec> solveTikhonov(const Vec &y, const Mat &fm,
+                                        const Mat &rm, double lambda) const;
+
+private:
+  LpLqRegularization(const LpLqRegularization &other) = delete;
+  LpLqRegularization(LpLqRegularization &&other) = delete;
+  LpLqRegularization &operator=(const LpLqRegularization &other) = delete;
 
 private:
   /**
    * @brief Forward transfer matrix which tranfers input to measurement
-   *
    */
   Mat forwardMatrix;
   /**
    * @brief Regularization matrix, which express the prior information about the
    * unknown state variable vector
-   *
    */
   Mat regularizationMatrix;
-  /**
-   * @brief vector norm for residual |y-Ax|_p
-   *
-   */
-  double p;
-  /**
-   * @brief vector norm for constraint or prior information |Lx|_2
-   *
-   */
-  double q;
 };
 } // namespace sci
 

@@ -3,29 +3,15 @@
 
 namespace sci {
 
-LpLqRegularization::LpLqRegularization(Mat &forwardM, Mat &regularizationM)
+LpLqRegularization::LpLqRegularization(const Mat &forwardM,
+                                       const Mat &regularizationM)
     : forwardMatrix(forwardM), regularizationMatrix(regularizationM) {}
 
-LpLqRegularization::LpLqRegularization(const LpLqRegularization &other) {
-  this->forwardMatrix = other.forwardMatrix;
-  this->regularizationMatrix = other.regularizationMatrix;
-}
-
-LpLqRegularization::LpLqRegularization(LpLqRegularization &&other)
-    : forwardMatrix(std::move(other.forwardMatrix)),
-      regularizationMatrix(std::move(other.regularizationMatrix)) {}
-
-LpLqRegularization &
-LpLqRegularization::operator=(const LpLqRegularization &other) {
-  if (this != &other) {
-    this->forwardMatrix = other.forwardMatrix;
-    this->regularizationMatrix = other.regularizationMatrix;
-  }
-  return *this;
-}
+LpLqRegularization::~LpLqRegularization(){};
 
 std::tuple<Result, Vec, double, double>
-LpLqRegularization::solve(Vec &y, double lambda, double p, double q) {
+LpLqRegularization::solve(const Vec &y, double lambda, double p,
+                          double q) const {
   int iteration = 0;
   double diff = 1e10;
 
@@ -79,8 +65,10 @@ LpLqRegularization::solve(Vec &y, double lambda, double p, double q) {
   return std::make_tuple(result, xEstimated, constraint_norm, residual_norm);
 }
 
-std::tuple<Result, Vec>
-LpLqRegularization::solveTikhonov(Vec &y, Mat &fm, Mat &rm, double lambda) {
+std::tuple<Result, Vec> LpLqRegularization::solveTikhonov(const Vec &y,
+                                                          const Mat &fm,
+                                                          const Mat &rm,
+                                                          double lambda) const {
   Result result = Result::OK;
   Vec xEstimated;
   double lambdasqr = lambda * lambda;

@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 using namespace sci;
-;
+
 TEST(RegularizationTest, InputCompatiplityTestCase) {
 
   Vec measurements;
