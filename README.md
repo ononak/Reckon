@@ -1,8 +1,8 @@
-# SciTool - Scientific Tool
+# SciTool
 
 SciTool is a library containing various algorithms for scientific applications.  
 
-## Lp-Lq regularization
+# Lp-Lq regularization
 
 Regularization is a method to adjust how closely a model fits to data. Adding an additional term that penalizes the loss function is one of the ways of adjusting the output model.
 Linear regularization problems can be defined as follows.
