@@ -24,17 +24,5 @@ Where $\mathbf{n}$ is the measurement noise vector.
 
 ***Reference:*** A Generalized Krylov Subspace Method for $L_{p}L{q}$ Minimization A. Lanza et al [doi:10.1137/140967982](https://epubs.siam.org/doi/10.1137/140967982) 
 
-### Samples
-Following two example show regularized solution for non-sparse and sparse models, respectively, for different $L_{p}L{q}$ regularization models .
-
- #### Non-sparse model
- 
- ![Untitled](https://github.com/ononak/ReguTool/assets/17129016/8b0f41c8-3ce6-4c34-9e08-e58c09831aab)
-
-#### Sparse model
-
-![Untitled](https://github.com/ononak/ReguTool/assets/17129016/86cd290d-02ac-42b3-9df2-88ba937c93e0)
-
-
 ## Kalman Filter
 
