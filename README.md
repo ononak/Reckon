@@ -18,7 +18,7 @@ $\mathbf{y}= \mathbf{A}\mathbf{x} + \mathbf{n}$
 
 Where $\mathbf{n}$ is the measurement noise vector.
 
-- If $p = q = 2$, then the problem is called Tikhonov regularization or $L_{2}$ regularization.
+- If $p = q = 2$, then the problem is called Tikhonov regularization or $L_{2}$ regularization that usually yields smooth estimation.
 
 - If $p = 2$, $q = 1$, then the problem is called $L_{1}$ regularization, which promotes sparsity in the solution.
 
