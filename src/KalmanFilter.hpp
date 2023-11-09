@@ -32,9 +32,9 @@ public:
    */
   KalmanFilter(const Mat &F, const Mat &B, const Mat &H, const Mat &Q,
                const Mat &R, const Mat &P0, const Vec &x0);
-  ~KalmanFilter();
+  virtual ~KalmanFilter();
   /**
-   * @brief Predict sate and estimationuncertanity
+   * @brief Predict sate and estimation uncertanity
    *
    * @param measurement
    * @param input

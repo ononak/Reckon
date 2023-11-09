@@ -27,7 +27,7 @@ public:
    * @param regularizationM regularization matrix
    */
   LpLqRegularization(const Mat &forwardM, const Mat &regularizationM);
-  ~LpLqRegularization();
+  virtual ~LpLqRegularization();
 
   /**
    * @brief Solve optimization problem min_x {|y-Ax|_p + lambda^2|Lx|_q}
