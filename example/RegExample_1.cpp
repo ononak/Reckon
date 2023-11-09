@@ -15,20 +15,18 @@
 #include <unistd.h>
 
 using namespace std::chrono;
-using namespace regu;
+using namespace sci;
 
 void test() {
 
   Mat regularizationMatrix, forwardMatrix;
   Vec timeInst, measurement, trueData;
 
-  auto ret =
-      regularizationMatrix.load("../test_data_3/D1.mat", arma::raw_ascii);
-  ret = forwardMatrix.load("../test_data_3/G.mat", arma::raw_ascii);
-  ret = timeInst.load("../test_data_3/t.Mat", arma::raw_ascii);
-  ret =
-      measurement.load("../test_data_3/noisy_observation.mat", arma::raw_ascii);
-  ret = trueData.load("../test_data_3/m_true.mat", arma::raw_ascii);
+  auto ret = regularizationMatrix.load("../example/test_data_2/D1.mat", arma::raw_ascii);
+  ret = forwardMatrix.load("../example/test_data_2/G.mat", arma::raw_ascii);
+  ret = timeInst.load("../example/test_data_2/t.Mat", arma::raw_ascii);
+  ret = measurement.load("../example/test_data_2/noisy_observation.mat", arma::raw_ascii);
+  ret = trueData.load("../example/test_data_2/m_true.mat", arma::raw_ascii);
 
   auto h1 = matplot::figure();
   matplot::plot(timeInst, measurement)->line_width(2);
@@ -45,17 +43,17 @@ void test() {
   matplot::hold(matplot::on);
 
   double pArray[] = {2, 2};
-  double qArray[] = {2,  1};
-  double lambdaArray[] = {6,  3};
+  double qArray[] = {2, 1};
+  double lambdaArray[] = {6, 3};
+  LpLqRegularization regularization(forwardMatrix, regularizationMatrix);
 
   for (int i = 0; i < 2; i++) {
-    std::tuple<bool, Vec, double, double> ret =
-        solve(measurement, forwardMatrix, regularizationMatrix, lambdaArray[i],
-              pArray[i], qArray[i]);
+    std::tuple<Result, Vec, double, double> ret =
+        regularization.solve(measurement, lambdaArray[i], pArray[i], qArray[i]);
     Vec estimation = std::get<1>(ret);
     matplot::plot(timeInst, estimation)->line_width(2);
   }
-  ::matplot::legend({"True", "L2L2",  "L2L1"});
+  ::matplot::legend({"True", "L2L2", "L2L1"});
   char key;
   std::cin >> key;
 }

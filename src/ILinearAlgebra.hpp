@@ -8,25 +8,27 @@
 #ifndef I_LINEAR_ALGEBRA_HPP
 #define I_LINEAR_ALGEBRA_HPP
 
+#include "SciTool.hpp"
 #include <armadillo>
 
-namespace regu {
+namespace sci {
 
 using Vec = arma::vec;
 using Mat = arma::mat;
 
 /**
- * @brief 
- * 
- * @tparam T 
- * @param v1 
- * @param v2 
- * @return true 
- * @return false 
+ * @brief
+ *
+ * @tparam T
+ * @param v1
+ * @param v2
+ * @return true
+ * @return false
  */
-template<typename T> bool operator==(const T& v1, const T& v2) {
-    return v1 == v2;
+template <typename T> bool operator==(const T &v1, const T &v2) {
+  return v1 == v2;
 }
+
 /**
  * @brief Generate unit matrix
  *
@@ -119,6 +121,14 @@ bool computeSvd(Mat &U, Vec &s, Mat &V, const Mat &A);
  */
 Vec solveLinearSystem(const Mat &Lhs, const Vec &rhs);
 
-}; // namespace regu
+/**
+ * @brief
+ *
+ * @param M
+ * @return Mat
+ */
+Mat inverse(const Mat &M);
+
+}; // namespace sci
 
 #endif

@@ -1,66 +1,30 @@
 #include "Regularization.hpp"
+#include <utility>
 
-namespace regu {
+namespace sci {
 
-std::tuple<bool, Vec> solve(Vec y, Mat A, Mat L, double lambda) {
+LpLqRegularization::LpLqRegularization(const Mat &forwardM,
+                                       const Mat &regularizationM)
+    : forwardMatrix(forwardM), regularizationMatrix(regularizationM) {}
 
-  bool result = true;
-  Vec xEstimated;
-  double lambdasqr = lambda * lambda;
+LpLqRegularization::~LpLqRegularization(){};
 
-  if ((A.n_cols != L.n_cols) || (y.n_rows != A.n_rows)) {
-    result = false;
-  }
-
-  if (result) {
-    // construct augmented matrix [A;L]
-    auto AugA = joinVertical(A, L);
-
-    // compute qr decomposition
-    Mat Q, R;
-    result = computeQrEconDecomposition(Q, R, AugA);
-    if (result) {
-      Mat Q1, U1, V1;
-      Vec s1;
-      Q1 = Q.rows(0, A.n_rows - 1);
-      if (!computeSvd(U1, s1, V1, Q1)) {
-        result = false;
-      }
-
-      if (result) {
-        // solve the system of linear equation to find the unknown vector x
-        auto S1 = diagonalize(s1);
-        S1.reshape(A.n_rows, A.n_cols);
-        Vec rhs = S1.t() * U1.t() * y;
-        auto In = makeEye(A.n_cols, A.n_cols);
-        Mat Lhs = (lambdasqr * In + (1 - lambdasqr) * S1.t() * S1);
-
-        try {
-          auto b = solveLinearSystem(Lhs, rhs);
-          auto xlhs = (V1.t() * R);
-          xEstimated = solveLinearSystem(xlhs, b);
-        } catch (...) {
-          result = false;
-        }
-      }
-    }
-  }
-  return std::tuple(result, xEstimated);
-}
-
-std::tuple<bool, Vec, double, double> solve(Vec y, Mat A, Mat L, double lambda,
-                                            double p, double q) {
+std::tuple<Result, Vec, double, double>
+LpLqRegularization::solve(const Vec &y, double lambda, double p,
+                          double q) const {
   int iteration = 0;
   double diff = 1e10;
 
   // initial estimation ıs L2L2 solution
-  auto [result, xEstimated] = solve(y, A, L, lambda);
+  auto [result, xEstimated] =
+      this->solveTikhonov(y, forwardMatrix, regularizationMatrix, lambda);
 
   // iterate solution till converge
-  while ((iteration <= MAX_ITER) && (diff >= tolerance) && (result == true)) {
+  while ((iteration <= MAX_ITER) && (diff >= tolerance) &&
+         (result == Result::OK)) {
     // Compute weight Matrices
-    auto v = makeAbs(A * xEstimated - y);
-    auto z = makeAbs(L * xEstimated);
+    auto v = makeAbs(forwardMatrix * xEstimated - y);
+    auto z = makeAbs(regularizationMatrix * xEstimated);
 
     auto elementwise_pow = [](Vec &source, double pw) -> Vec {
       Vec retval(source.size());
@@ -77,27 +41,76 @@ std::tuple<bool, Vec, double, double> solve(Vec y, Mat A, Mat L, double lambda,
     auto wr = elementwise_pow(z, (q - 2) / 2);
     auto WF = diagonalize(wf);
     auto WR = diagonalize(wr);
-    auto AF = WF * A;
-    auto LR = WR * L;
-    auto bF = WF * y;
+    Mat AF = WF * forwardMatrix;
+    Mat LR = WR * regularizationMatrix;
+    Vec bF = WF * y;
 
-    auto [result, xEstimatedNew] = solve(bF, AF, LR, lambda);
+    auto [result, xEstimatedNew] = solveTikhonov(bF, AF, LR, lambda);
     auto estimatedNorm = computeNorm(xEstimatedNew);
     if (estimatedNorm > 0) {
       diff = computeNorm(xEstimatedNew - xEstimated) / estimatedNorm;
       xEstimated = xEstimatedNew;
     } else {
-      result = false;
+      result = Result::NOK;
     }
     iteration++;
   }
 
   double constraint_norm, residual_norm;
-  if (result) {
-    constraint_norm = computeNorm(L * xEstimated, q);
-    residual_norm = computeNorm(y - A * xEstimated, p);
+  if (result == Result::OK) {
+    constraint_norm = computeNorm(regularizationMatrix * xEstimated, q);
+    residual_norm = computeNorm(y - forwardMatrix * xEstimated, p);
   }
 
   return std::make_tuple(result, xEstimated, constraint_norm, residual_norm);
 }
-} // namespace regu
+
+std::tuple<Result, Vec> LpLqRegularization::solveTikhonov(const Vec &y,
+                                                          const Mat &fm,
+                                                          const Mat &rm,
+                                                          double lambda) const {
+  Result result = Result::OK;
+  Vec xEstimated;
+  double lambdasqr = lambda * lambda;
+
+  if ((fm.n_cols != rm.n_cols) || (y.n_rows != fm.n_rows)) {
+    result = Result::NOK;
+  }
+
+  if (result == Result::OK) {
+    // construct augmented matrix [A;L]
+    auto AugA = joinVertical(fm, rm);
+
+    // compute qr decomposition
+    Mat Q, R;
+    auto qrResult = computeQrEconDecomposition(Q, R, AugA);
+    if (qrResult) {
+      Mat Q1, U1, V1;
+      Vec s1;
+      Q1 = Q.rows(0, fm.n_rows - 1);
+      if (!computeSvd(U1, s1, V1, Q1)) {
+        result = Result::UNEXPECTED_ERROR;
+      }
+
+      if (result == Result::OK) {
+        // solve the system of linear equation to find the unknown vector x
+        auto S1 = diagonalize(s1);
+        S1.reshape(fm.n_rows, fm.n_cols);
+        Vec rhs = S1.t() * U1.t() * y;
+        auto In = makeEye(fm.n_cols, fm.n_cols);
+        Mat Lhs = (lambdasqr * In + (1 - lambdasqr) * S1.t() * S1);
+
+        try {
+          auto b = solveLinearSystem(Lhs, rhs);
+          auto xlhs = (V1.t() * R);
+          xEstimated = solveLinearSystem(xlhs, b);
+        } catch (...) {
+          result = Result::UNEXPECTED_ERROR;
+        }
+      }
+    }
+  }
+  return std::tuple(result, xEstimated);
+}
+
+} // namespace sci

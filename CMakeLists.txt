@@ -58,29 +58,29 @@ target_link_libraries(scilib PUBLIC ${ARMADILLO_LIBRARIES})
 #----------------------------------------------------------------
 # Examples
 #----------------------------------------------------------------
-add_executable(example_1 example/example_1.cpp ${PROJ_SRC})
-add_executable(example_2 example/example_2.cpp ${PROJ_SRC})
-target_link_libraries(example_1 PUBLIC scilib matplot)
-target_link_libraries(example_2 PUBLIC scilib matplot)
+add_executable(RegExample_1 example/RegExample_1.cpp ${PROJ_SRC})
+add_executable(RegExample_2 example/RegExample_2.cpp ${PROJ_SRC})
+target_link_libraries(RegExample_1 PUBLIC scilib matplot)
+target_link_libraries(RegExample_2 PUBLIC scilib matplot)
 
 #----------------------------------------------------------------
 # Unit Tests
 #----------------------------------------------------------------
 add_executable(
-  TestRegularization
+  TestSci
   ${TEST_SRC}
   ${PROJ_SRC}
 )
 
 target_link_libraries(
-  TestRegularization
+  TestSci
   scilib
   GTest::gtest_main
   GTest::gmock_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(TestRegularization)
+gtest_discover_tests(TestSci)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
