@@ -26,3 +26,5 @@ Where $\mathbf{n}$ is the measurement noise vector.
 
 ## Kalman Filter
 
+Kalman filtering is an algorithm that allows us to estimate the state of a system based on observations or measurements.
+![Kalman](https://github.com/ononak/SciTool/assets/17129016/3728fe3d-11d6-434f-bd87-504838daff51)
