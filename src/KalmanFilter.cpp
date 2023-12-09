@@ -49,7 +49,6 @@ std::tuple<Result, KalmanOutput> KalmanFilter::predict(const Vec &measurement,
       (nOfObservedState == measurement.n_rows)) {
 
     try {
-
       /*
        * priori state and uncertanity estimation
        */

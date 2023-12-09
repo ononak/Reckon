@@ -22,8 +22,8 @@ public:
   /**
    * @brief Kalman Filter object
    *
-   * @param F state stransiition matrix
-   * @param B ınput control matrix
+   * @param F state stransition matrix
+   * @param B input control matrix
    * @param H observation matrix
    * @param Q process noise covariance matrix
    * @param R measurement noise covariance matrix
