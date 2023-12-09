@@ -22,7 +22,23 @@ Where $\mathbf{n}$ is the measurement noise vector.
 
 - If $p = 2$, $q = 1$, then the problem is called $L_{1}$ regularization, which promotes sparsity in the solution.
 
-***Reference:*** A Generalized Krylov Subspace Method for $L_{p}L{q}$ Minimization A. Lanza et al [doi:10.1137/140967982](https://epubs.siam.org/doi/10.1137/140967982) 
-
 ## Kalman Filter
 
+Kalman filtering is an algorithm that allows us to estimate the state of a system based on observations or measurements.
+The state of a system at time k evolved from the prior state at time k-1, expressed in the following form;
+
+$\mathbf{x}(k)= \mathbf{A}\mathbf{x}(k-1) + \mathbf{B}\mathbf{u}(k-1) + \mathbf{w}(k-1)$
+
+And the accompanying observation is defined as;
+
+$\mathbf{y}(k)= \mathbf{H}\mathbf{x}(k) + \mathbf{v}(k-1)$
+
+where
+
+$p(\mathbf{w}) \sim \mathcal{N}(0,\mathbf{Q})$
+
+$p(\mathbf{v}) \sim \mathcal{N}(0, \mathbf{R})$
+
+The cycle of discrete Kalman filter.
+
+![Kalman](https://github.com/ononak/SciTool/assets/17129016/3728fe3d-11d6-434f-bd87-504838daff51)
