@@ -1,6 +1,6 @@
-# SciTool
+# Reckon
 
-SciTool is a library containing various algorithms for scientific applications.  
+Reckon is a library containing various algorithms for scientific applications.  
 
 
 ## Regularization
