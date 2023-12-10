@@ -62,21 +62,17 @@ void test() {
 
   LinearSystem lsystem;
 
-  std::cout << "Generating Process and Observation noise" << std::endl;
-  // Mat noiseY;
-  // noiseY.load("onoise.mat",arma::raw_ascii);
-
+  // measurement noise
   Mat noiseY =
       arma::randn(lsystem.sizeY, lsystem.nSample,
                   arma::distr_param(lsystem.munoiseY, lsystem.stdNoiseY));
-  // Mat noiseProcess;
-  // noiseProcess.load("pnoise.mat",arma::raw_ascii);
+
+  // processing noise
   Mat noiseProcess = arma::randn(
       lsystem.sizeX, lsystem.nSample,
       arma::distr_param(lsystem.muNoiseProcess, lsystem.stdNoiseProcess));
 
-  std::cout << "Calculating real system states and measurements " << std::endl;
-
+  // Prepare Real system data
   Mat X(lsystem.sizeX, lsystem.nSample, arma::fill::zeros);
   Mat Y(lsystem.sizeY, lsystem.nSample, arma::fill::zeros);
   Mat Ynoisy(lsystem.sizeY, lsystem.nSample, arma::fill::zeros);
@@ -90,8 +86,7 @@ void test() {
     Ynoisy.col(i) = Y.col(i) + noiseY.col(i);
   }
 
-  std::cout << "Kalman filtering " << std::endl;
-
+  // Kalman filtering
   Vec yfiltered(lsystem.nSample, arma::fill::zeros);
   Vec yCov(lsystem.nSample, arma::fill::zeros);
   KalmanFilter tracker(lsystem.A, lsystem.B, lsystem.H, lsystem.Q, lsystem.R,

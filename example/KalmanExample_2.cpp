@@ -38,7 +38,7 @@ void plotResults(const Vec y, const Vec ynoisy, const Vec yfiltered,
   matplot::plot(y)->line_width(2);
   matplot::plot(ynoisy)->line_width(2);
   matplot::plot(yfiltered)->line_width(2);
-  ::matplot::legend({"True","Real observation", "Filtered observation"});
+  ::matplot::legend({"True", "Real observation", "Filtered observation"});
 
   auto h2 = matplot::figure();
   matplot::title("Error covariance");
@@ -63,21 +63,17 @@ void test() {
 
   LinearSystem lsystem;
 
-  std::cout << "Generating Process and Observation noise" << std::endl;
-  // Mat noiseY;
-  // noiseY.load("onoise.mat",arma::raw_ascii);
-
+  // measurement noise
   Mat noiseY =
       arma::randn(lsystem.sizeY, lsystem.nSample,
                   arma::distr_param(lsystem.munoiseY, lsystem.stdNoiseY));
-  // Mat noiseProcess;
-  // noiseProcess.load("pnoise.mat",arma::raw_ascii);
+
+  // process noise
   Mat noiseProcess = arma::randn(
       lsystem.sizeX, lsystem.nSample,
       arma::distr_param(lsystem.muNoiseProcess, lsystem.stdNoiseProcess));
 
-  std::cout << "Calculating real system states and measurements " << std::endl;
-
+  // Prepare Real system data
   Mat X(lsystem.sizeX, lsystem.nSample, arma::fill::zeros);
   Mat Y(lsystem.sizeY, lsystem.nSample, arma::fill::zeros);
   Mat Ynoisy(lsystem.sizeY, lsystem.nSample, arma::fill::zeros);
@@ -88,15 +84,14 @@ void test() {
   Ynoisy.col(0) = Y.col(0) + noiseY.col(0);
 
   for (int i = 1; i < lsystem.nSample; i++) {
-    U.col(i) = sin(i/5);
+    U.col(i) = sin(i / 5);
     X.col(i) =
         lsystem.A * X.col(i - 1) + lsystem.B * U.col(i) + noiseProcess.col(i);
     Y.col(i) = lsystem.H * X.col(i - 1);
     Ynoisy.col(i) = Y.col(i) + noiseY.col(i);
   }
 
-  std::cout << "Kalman filtering " << std::endl;
-
+  // Kalman filtering
   Vec yfiltered(lsystem.nSample, arma::fill::zeros);
   Vec yCov(lsystem.nSample, arma::fill::zeros);
   KalmanFilter tracker(lsystem.A, lsystem.B, lsystem.H, lsystem.Q, lsystem.R,
