@@ -46,12 +46,6 @@ void plotResults(const Vec y, const Vec ynoisy, const Vec yfiltered,
   Vec errorTrue = y - ynoisy;
   Vec errorFiltered = y - yfiltered;
 
-  auto ec1 = errorTrue.t() * errorTrue / 100;
-  auto ec2 = errorFiltered.t() * errorFiltered / 100;
-
-  ec1.print();
-  ec2.print();
-
   matplot::plot(errorTrue)->line_width(2);
   matplot::plot(errorFiltered)->line_width(2);
   ::matplot::legend({"Error before Kalman", "Error after Kalman"});
