@@ -3,45 +3,63 @@
 using namespace sci;
 struct LinearSystem {
 
-  const int nSample = 200;
-  const int sizeX = 2;
+  const int nSample = 100;
+  const int sizeX = 3;
   const int sizeY = 1;
   /**
    * linear system chareacteristics
    * x(k+1) = Ax(k) + Bu + w(k)
    * y(k+1) = Hx(k+1) + v(k)
    */
-  double varNoiseProcess = .1;
+  double varNoiseProcess = 0.001;
   double stdNoiseProcess = sqrt(varNoiseProcess);
   double muNoiseProcess = 0;
-  double varNoiseY = 2;
+  double varNoiseY = 1;
   double stdNoiseY = sqrt(varNoiseY);
   double munoiseY = 0;
 
-  Mat A = {{1.9223, -0.9604}, {1, 0}};
-  Vec B = {0, 0};
-  Mat H = {.5, .3};
+  Mat A = {{1.1269, -0.4940, 0.1129}, {1, 0, 0}, {0, 1, 0}};
+  Vec B = {-0.3832, 0.5919, 0.5191};
+  Mat H = {1, 0, 0};
   Mat R = {varNoiseY};
-  Mat Q = {{varNoiseProcess, 0}, {0, varNoiseProcess}};
-  Vec x0 = {.1, .5};
-  Mat P0 = {{1, 0}, {0, 1}};
-  Vec u = {0};
+  Mat Q = {{varNoiseProcess, 0, 0},
+           {0, varNoiseProcess, 0},
+           {0, 0, varNoiseProcess}};
+  Vec x0 = {0, 0, 0};
+  Mat P0 = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
 };
 
-void plotResults(const Vec y, const Vec yfiltered, const Vec &yCov) {
+void plotResults(const Vec y, const Vec ynoisy, const Vec yfiltered,
+                 const Vec &yCov) {
   // Plot results
   auto h1 = matplot::figure();
   matplot::title("System output Y");
   matplot::hold(matplot::on);
   matplot::plot(y)->line_width(2);
+  matplot::plot(ynoisy)->line_width(2);
   matplot::plot(yfiltered)->line_width(2);
-  ::matplot::legend({"Real observation", "Filtered observation"});
+  ::matplot::legend({"True","Real observation", "Filtered observation"});
 
   auto h2 = matplot::figure();
   matplot::title("Error covariance");
   matplot::hold(matplot::on);
-  matplot::plot(yCov)->line_width(2);
+  Vec errorTrue = y - ynoisy;
+  Vec errorFiltered = y - yfiltered;
 
+  auto ec1 = errorTrue.t() * errorTrue / 100;
+  auto ec2 = errorFiltered.t() * errorFiltered / 100;
+
+  ec1.print();
+  ec2.print();
+
+  matplot::plot(errorTrue)->line_width(2);
+  matplot::plot(errorFiltered)->line_width(2);
+  ::matplot::legend({"Error before Kalman", "Error after Kalman"});
+
+  auto h3 = matplot::figure();
+  matplot::title("Error covariance");
+  matplot::hold(matplot::on);
+  matplot::plot(yCov)->line_width(2);
 
   char key;
   std::cin >> key;
@@ -68,14 +86,21 @@ void test() {
 
   Mat X(lsystem.sizeX, lsystem.nSample, arma::fill::zeros);
   Mat Y(lsystem.sizeY, lsystem.nSample, arma::fill::zeros);
+  Mat Ynoisy(lsystem.sizeY, lsystem.nSample, arma::fill::zeros);
+  Mat U(1, lsystem.nSample, arma::fill::zeros);
 
-  X.col(0) = {0.1, 0.5};
+  X.col(0) = lsystem.x0;
   Y.col(0) = lsystem.H * X.col(0);
+  Ynoisy.col(0) = Y.col(0) + noiseY.col(0);
 
   for (int i = 1; i < lsystem.nSample; i++) {
-    X.col(i) = lsystem.A * X.col(i - 1) + noiseProcess.col(i);
-    Y.col(i) = lsystem.H * X.col(i - 1) + noiseY.col(i);
+    U.col(i) = sin(i/5);
+    X.col(i) =
+        lsystem.A * X.col(i - 1) + lsystem.B * U.col(i) + noiseProcess.col(i);
+    Y.col(i) = lsystem.H * X.col(i - 1);
+    Ynoisy.col(i) = Y.col(i) + noiseY.col(i);
   }
+
   std::cout << "Kalman filtering " << std::endl;
 
   Vec yfiltered(lsystem.nSample, arma::fill::zeros);
@@ -85,15 +110,15 @@ void test() {
   for (int i = 0; i < lsystem.nSample; i++) {
 
     std::cout << ". ";
-    auto [ret, output] = tracker.predict(Y.col(i), lsystem.u);
-    yfiltered(i) = output.Y(0,0);
-    yCov(i) = output.EP(0,0);
+    auto [ret, output] = tracker.predict(Ynoisy.col(i), U.col(i));
+    yfiltered(i) = output.Y(0, 0);
+    yCov(i) = output.EP(0, 0);
     if (i % 50 == 0)
       std::cout << std::endl;
   }
   std::cout << " OK" << std::endl;
 
-  plotResults(Y.row(0).t(),yfiltered,yCov);
+  plotResults(Y.row(0).t(), Ynoisy.row(0).t(), yfiltered, yCov);
 }
 
 int main(int argc, const char *argv[]) {

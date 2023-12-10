@@ -23,7 +23,7 @@ protected:
     y = Vec(2, arma::fill::ones);
 
     Kf = std::make_unique<KalmanFilter>(F, B, H, Q, R, P0, x0);
-    KfInconsisted =
+    KfInconsistend =
         std::make_unique<KalmanFilter>(makeEye(3, 2), B, H, Q, R, P0, x0);
   };
 
@@ -38,22 +38,18 @@ protected:
 
   Mat F, B, H, Q, R, P0;
   Vec x0, u, y;
-  std::unique_ptr<KalmanFilter> Kf, KfInconsisted;
+  std::unique_ptr<KalmanFilter> Kf, KfInconsistend;
 };
 
-TEST_F(KalmanTest, TestInconsistedPrediction) {
+TEST_F(KalmanTest, TestInconsistendLinearSystem) {
 
-  auto consistency = KfInconsisted->checkConsistency();
-  EXPECT_FALSE(consistency);
-  auto result = KfInconsisted->predict(y, u);
+  auto result = KfInconsistend->predict(y, u);
   auto retval = std::get<0>(result);
   EXPECT_EQ(Result::UNEXPECTED_ERROR, retval);
 }
 
 TEST_F(KalmanTest, TestPrediction) {
 
-  auto consistency = Kf->checkConsistency();
-  EXPECT_TRUE(consistency);
   auto result = Kf->predict(y, u);
   auto retval = std::get<0>(result);
   EXPECT_EQ(Result::OK, retval);
