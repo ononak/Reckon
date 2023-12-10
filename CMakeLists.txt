@@ -60,9 +60,12 @@ target_link_libraries(scilib PUBLIC ${ARMADILLO_LIBRARIES})
 #----------------------------------------------------------------
 add_executable(RegExample_1 example/RegExample_1.cpp ${PROJ_SRC})
 add_executable(RegExample_2 example/RegExample_2.cpp ${PROJ_SRC})
+add_executable(KalmanExample_1 example/KalmanExample_1.cpp ${PROJ_SRC})
+add_executable(KalmanExample_2 example/KalmanExample_2.cpp ${PROJ_SRC})
 target_link_libraries(RegExample_1 PUBLIC scilib matplot)
 target_link_libraries(RegExample_2 PUBLIC scilib matplot)
-
+target_link_libraries(KalmanExample_1 PUBLIC scilib matplot)
+target_link_libraries(KalmanExample_2 PUBLIC scilib matplot)
 #----------------------------------------------------------------
 # Unit Tests
 #----------------------------------------------------------------

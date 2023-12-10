@@ -6,8 +6,10 @@
 namespace sci {
 
 struct KalmanOutput {
-  Vec stateEstimation;
-  Mat estimationCovariances;
+  Vec X; // estimated state
+  Mat P; // state covariance
+  Vec Y; // filtered measurement
+  Mat EP; // Error covariance
 };
 
 /**
@@ -20,44 +22,34 @@ class KalmanFilter {
 
 public:
   /**
-   * @brief Kalman Filter object
+   * @brief Construct a new Kalman Filter object
    *
-   * @param F state stransiition matrix
-   * @param B ınput control matrix
-   * @param H observation matrix
-   * @param Q process noise covariance matrix
-   * @param R measurement noise covariance matrix
-   * @param P0 initial estimate covariance
-   * @param x0 initial state
+   * @param stateTransitionOperator  F
+   * @param controlInputOperator   B
+   * @param observationOperator  H
+   * @param processCovariance  Q
+   * @param measurementCovariance R
+   * @param initialEstimationCovariance P0
+   * @param initialState x0
    */
-  KalmanFilter(const Mat &F, const Mat &B, const Mat &H, const Mat &Q,
-               const Mat &R, const Mat &P0, const Vec &x0);
+  KalmanFilter(const Mat &stateTransitionOperator,
+               const Mat &controlInputOperator, const Mat &observationOperator,
+               const Mat &processCovariance, const Mat &measurementCovariance,
+               const Mat &initialEstimationCovariance, const Vec &initialState);
+
   virtual ~KalmanFilter();
-  /**
-   * @brief Predict sate and estimation uncertanity
-   *
-   * @param measurement
-   * @param input
-   * @return std::tuple<Result, KalmanOutput>
-   */
-  std::tuple<Result, KalmanOutput> predict(const Vec &measurement,
-                                           const Vec &input);
 
   /**
-   * @brief Check input consistency
-   * 
-   * @return true 
-   * @return false 
+   * @brief Predict sate and estimation uncertanity
+   * @param measurement y
+   * @param input u
+   * @return std::tuple<Result, KalmanOutput>
    */
-  bool checkConsistency();
+  std::tuple<Result, KalmanOutput> predict(const Vec &y, const Vec &u);
+
 protected:
-  /**
-   * @brief Correction with measurement. Update gain, state and uncertanity
-   * (corection step)
-   *
-   */
-  void update(const Vec &measurement, const Vec &prioriStateEstimate,
-              const Mat &prioriStateCovariance);
+void measurementUpdate(const Vec &measurement);
+void timeUpdate(const Vec &u);
 
 private:
   KalmanFilter(const KalmanFilter &other) = delete;
@@ -65,16 +57,17 @@ private:
   KalmanFilter &operator=(const KalmanFilter &other) = delete;
 
 private:
-  Mat stateTransitionOperator;
-  Mat controlInputOperator;
-  Mat observationOperator;
-  Mat processCovariance;
-  Mat measurementCovariance;
-  Mat kalmanGain;
-  Mat estimationCovariance;
-  Vec estimatedState;
-  int nOfState;
-  int nOfObservedState;
+  const Mat F;
+  const Mat B;
+  const Mat H;
+  const Mat Q;
+  const Mat R;
+  Mat I;
+  Mat K; // Kalman gain
+  Mat P; // estimation covariance
+  Vec Xestimated;
+  int sizeX;
+  int sizeY;
 };
 
 } // namespace sci
