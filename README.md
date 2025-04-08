@@ -5,8 +5,7 @@ Reckon is a library containing various algorithms for scientific applications.
 
 ## Regularization
 
-Regularization is a method to adjust how closely a model fits to data. Adding an additional term that penalizes the loss function is one of the ways of adjusting the output model.
-Linear regularization problems can be defined as follows.
+Regularization is a method used to control how closely a model fits the data, especially in ill-posed or ill-conditioned problems. One common approach is to modify the loss function by adding a penalty term that constrains the solution. This leads to the linear regularization problem, which can be expressed as:
 
 ![equation](https://github.com/ononak/SciTool/assets/17129016/e6623a28-9465-428a-9ea9-3986f7902d15)
 
